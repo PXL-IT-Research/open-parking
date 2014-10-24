@@ -31,9 +31,9 @@ public class ParkingMapFragment extends Fragment {
     private static final String PREFS_SCROLL_X = "xpos";
     private static final String PREFS_SCROLL_Y = "ypos";
     private static final String PREFS_ZOOM_LEVEL = "zoomlevel";
-    private static final int DEFAULT_SCROLL_X = 537000;
-    private static final int DEFAULT_SCROLL_Y = 351000;
-    private static final int DEFAULT_ZOOM_LEVEL = 12;
+    private static final int DEFAULT_SCROLL_X = 1073930;
+    private static final int DEFAULT_SCROLL_Y = 699640;
+    private static final int DEFAULT_ZOOM_LEVEL = 13;
     private static final int MIN_ZOOM_LEVEL = 8;
 
     private SharedPreferences mPrefs;
@@ -59,7 +59,7 @@ public class ParkingMapFragment extends Fragment {
 	this.mPrefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 	this.mMapView.getController().setZoom(
 		this.mPrefs.getInt(PREFS_ZOOM_LEVEL, DEFAULT_ZOOM_LEVEL));
-	Log.d("PREFS_ZOOM_LEVEL", "" + this.mPrefs.getInt(PREFS_ZOOM_LEVEL, DEFAULT_ZOOM_LEVEL));
+
 	this.mMapView.setScrollX(this.mPrefs.getInt(PREFS_SCROLL_X, DEFAULT_SCROLL_X));
 	this.mMapView.setScrollY(this.mPrefs.getInt(PREFS_SCROLL_Y, DEFAULT_SCROLL_Y));
 
