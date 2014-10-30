@@ -18,8 +18,8 @@ public class FileWriterAsyncTask extends AsyncTask<String, Void, Boolean> {
 	private IAsyncCallback<Boolean> resultListener;
 	private Context context;
 
-	public FileWriterAsyncTask(IAsyncCallback<Boolean> uiClass, Context ctx) {
-		this.resultListener = uiClass;
+	public FileWriterAsyncTask(IAsyncCallback<Boolean> callback, Context ctx) {
+		this.resultListener = callback;
 		this.context = ctx;
 	}
 

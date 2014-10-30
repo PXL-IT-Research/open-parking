@@ -39,6 +39,8 @@ public class MapFragment extends Fragment {
 		this.mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
 		this.mMapView = new MapView(inflater.getContext(), 256, this.mResourceProxy);
 		this.mMapView.setMinZoomLevel(MIN_ZOOM_LEVEL);
+		// disable openGL to increase texture size
+		this.mMapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); 
 		return this.mMapView;
 	}
 
@@ -57,6 +59,7 @@ public class MapFragment extends Fragment {
 
 		// show user on map
 		final Context context = getActivity();
+
 		GpsMyLocationProvider locProvider = new GpsMyLocationProvider(context);
 		this.mLocationOverlay = new MyLocationNewOverlay(context, locProvider, this.mMapView);
 		this.mLocationOverlay.enableMyLocation();

@@ -10,18 +10,93 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+import be.pxl.it.network.FileReaderAsyncTask;
+import be.pxl.it.network.FileWriterAsyncTask;
+import be.pxl.it.network.HttpGetAsyncTask;
+import be.pxl.it.network.IAsyncCallback;
+import be.pxl.stilkin.kingparking.MapFragment;
 import be.pxl.stilkin.kingparking.MyPathOverlay;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 public class AntwerpUtils {
+	public static final String ANTWERP_ZONES_URL = "http://datasets.antwerpen.be/v1/geografie/paparkeertariefzones.json";
+	public static final String CACHE_FILENAME_ANTWERP = "parking_cache_antwerp";
+
 	public static final String RED = "Rood";
 	public static final String BLUE = "Blauw";
 	public static final String LIGHT_GREEN = "Lichtgroen";
 	public static final String ORANGE = "Oranje";
 	public static final String YELLOW = "Geel";
 	public static final String DARK_GREEN = "Donkergroen";
+
+	private List<Overlay> zoneOverlays;
+	private MapFragment mapFrag;
+
+	public AntwerpUtils(MapFragment mapFrag) {
+		this.mapFrag = mapFrag;
+	}
+
+	/**
+	 * Will load zones from disk if cache is present, otherwise will load directly from site.
+	 * @param ctx
+	 */
+	public void loadAntwerpParkingZones(Context ctx) {
+		// load from file
+		FileReaderAsyncTask fileTask = new FileReaderAsyncTask(new FileReadCallbackHandler(), ctx);
+		fileTask.execute(CACHE_FILENAME_ANTWERP);
+	}
+
+	private class FileReadCallbackHandler implements IAsyncCallback<String> {
+		@Override
+		public void onOperationCompleted(String result) {
+			if (result != null && result.length() > 0) {
+				processJsonResult(result);
+			} else {
+				Log.d("FileReadCallbackHandler", "Cache empty...");
+			}
+
+			// fetch from web resource
+			loadAntwerpParkingZonesFromWeb();
+		}
+	}
+
+	public void loadAntwerpParkingZonesFromWeb() {
+		// load from site
+		Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
+		HttpGetAsyncTask getTask = new HttpGetAsyncTask(new HttpGetCallBackHandler());
+		getTask.execute(ANTWERP_ZONES_URL);
+	}
+
+	private class HttpGetCallBackHandler implements IAsyncCallback<String> {
+		@Override
+		public void onOperationCompleted(String result) {
+			// save to file?
+			FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, mapFrag.getActivity());
+			writeTask.execute(AntwerpUtils.CACHE_FILENAME_ANTWERP, result);
+			Log.d("GetCallBackHandler", "Saving to cache");
+			processJsonResult(result);
+		}
+	}
+
+	public void processJsonResult(String json) {
+		Log.d("parseJsonResult", "Displaying data");
+		if (zoneOverlays != null) {
+			for (Overlay zone : zoneOverlays) {
+				mapFrag.removeOverlay(zone);
+			}
+			zoneOverlays.clear();
+		}
+
+		List<ParkeerZone> zones = AntwerpUtils.parseJson(json);
+		zoneOverlays = AntwerpUtils.generateParkingzoneOverlays(zones, mapFrag.getActivity());
+		for (Overlay zone : zoneOverlays) {
+			mapFrag.addOverlay(zone);
+		}
+	}
+
+	/* ** Static methods ** */
 
 	public static int getColorFromString(String colorName) {
 		if (RED.equals(colorName)) {

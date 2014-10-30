@@ -11,19 +11,19 @@ import android.os.AsyncTask;
 
 /**
  * Class that performs a file read in the background
- * 
+ * Call execute with one parameters: file name
  * @author Servaas Tilkin
  */
 public class FileReaderAsyncTask extends AsyncTask<String, Void, String> {
 	private IAsyncCallback<String> resultListener;
 	private Context context;
 
-	public FileReaderAsyncTask(IAsyncCallback<String> uiClass, Context ctx) {
-		this.resultListener = uiClass;
+	public FileReaderAsyncTask(IAsyncCallback<String> callback, Context ctx) {
+		this.resultListener = callback;
 		this.context = ctx;
 	}
 
-	public synchronized Context getContext() {
+	private synchronized Context getContext() {
 		return context;
 	}
 
@@ -33,7 +33,7 @@ public class FileReaderAsyncTask extends AsyncTask<String, Void, String> {
 			return null;
 		}
 
-		String fileName = args[0]; // get url from params
+		String fileName = args[0]; // get filename from params
 
 		BufferedReader buf_in = null;
 		StringBuilder content = new StringBuilder();

@@ -18,8 +18,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.util.Log;
+import android.view.View;
 
 /**
  * 
@@ -77,7 +76,6 @@ public class MyPathOverlay extends PathOverlay {
 		this.mPaint.setColor(color);
 		this.mPaint.setStrokeWidth(width);
 		this.mPaint.setStyle(Paint.Style.STROKE);
-
 		clearPath();
 	}
 
