@@ -87,7 +87,7 @@ public class MapFragment extends Fragment {
 		// focus on position
 		LocationManager mLocMgr = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
-		mLocMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 100,
+		mLocMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10,
 				new LocationHandler());
 	}
 
