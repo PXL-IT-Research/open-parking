@@ -1,9 +1,13 @@
-package be.pxl.stilkin.kingparking;
+package be.pxl.parking.gui;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -74,6 +78,10 @@ public class MapFragment extends Fragment {
 	public void removeOverlay(Overlay overlay) {
 		this.mMapView.getOverlays().remove(overlay);
 		this.mMapView.invalidate();
+	}
+	
+	public void addOverlayItems(List<OverlayItem> items) {
+		
 	}
 	
 	@Override

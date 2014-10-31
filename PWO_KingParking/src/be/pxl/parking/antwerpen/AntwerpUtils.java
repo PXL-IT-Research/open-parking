@@ -10,17 +10,18 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
-import be.pxl.it.network.FileReaderAsyncTask;
-import be.pxl.it.network.FileWriterAsyncTask;
-import be.pxl.it.network.HttpGetAsyncTask;
-import be.pxl.it.network.IAsyncCallback;
-import be.pxl.stilkin.kingparking.MapFragment;
-import be.pxl.stilkin.kingparking.MyPathOverlay;
+import be.pxl.itresearch.io.FileReaderAsyncTask;
+import be.pxl.itresearch.io.FileWriterAsyncTask;
+import be.pxl.itresearch.io.HttpGetAsyncTask;
+import be.pxl.itresearch.io.IAsyncCallback;
+import be.pxl.parking.components.CityParkings;
+import be.pxl.parking.gui.MapFragment;
+import be.pxl.parking.gui.MyPathOverlay;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-public class AntwerpUtils {
+public class AntwerpUtils extends CityParkings {
 	public static final String ANTWERP_ZONES_URL = "http://datasets.antwerpen.be/v1/geografie/paparkeertariefzones.json";
 	public static final String CACHE_FILENAME_ANTWERP = "parking_cache_antwerp";
 
@@ -32,17 +33,18 @@ public class AntwerpUtils {
 	public static final String DARK_GREEN = "Donkergroen";
 
 	private List<Overlay> zoneOverlays;
-	private MapFragment mapFrag;
 
 	public AntwerpUtils(MapFragment mapFrag) {
-		this.mapFrag = mapFrag;
+		super(mapFrag);
 	}
 
 	/**
 	 * Will load zones from disk if cache is present, otherwise will load directly from site.
+	 * 
 	 * @param ctx
 	 */
-	public void loadAntwerpParkingZones(Context ctx) {
+	@Override
+	public void loadParkings(Context ctx) {
 		// load from file
 		FileReaderAsyncTask fileTask = new FileReaderAsyncTask(new FileReadCallbackHandler(), ctx);
 		fileTask.execute(CACHE_FILENAME_ANTWERP);
@@ -52,7 +54,7 @@ public class AntwerpUtils {
 		@Override
 		public void onOperationCompleted(String result) {
 			if (result != null && result.length() > 0) {
-				processJsonResult(result);
+				processJsonParkeerzones(result);
 			} else {
 				Log.d("FileReadCallbackHandler", "Cache empty...");
 			}
@@ -64,7 +66,7 @@ public class AntwerpUtils {
 
 	public void loadAntwerpParkingZonesFromWeb() {
 		// load from site
-		Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
+//		Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
 		HttpGetAsyncTask getTask = new HttpGetAsyncTask(new HttpGetCallBackHandler());
 		getTask.execute(ANTWERP_ZONES_URL);
 	}
@@ -75,13 +77,13 @@ public class AntwerpUtils {
 			// save to file?
 			FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, mapFrag.getActivity());
 			writeTask.execute(AntwerpUtils.CACHE_FILENAME_ANTWERP, result);
-			Log.d("GetCallBackHandler", "Saving to cache");
-			processJsonResult(result);
+//			Log.d("GetCallBackHandler", "Saving to cache");
+			processJsonParkeerzones(result);
 		}
 	}
 
-	public void processJsonResult(String json) {
-		Log.d("parseJsonResult", "Displaying data");
+	public void processJsonParkeerzones(String json) {
+		Log.d("processJsonParkeerzones", "Displaying Antwerp data");
 		if (zoneOverlays != null) {
 			for (Overlay zone : zoneOverlays) {
 				mapFrag.removeOverlay(zone);

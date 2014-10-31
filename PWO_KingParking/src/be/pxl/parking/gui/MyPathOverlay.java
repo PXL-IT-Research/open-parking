@@ -1,4 +1,4 @@
-package be.pxl.stilkin.kingparking;
+package be.pxl.parking.gui;
 
 import java.util.ArrayList;
 import java.util.List;

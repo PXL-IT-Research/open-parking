@@ -1,4 +1,4 @@
-package be.pxl.it.network;
+package be.pxl.itresearch.io;
 
 /**
  * @author Tristan Fransen

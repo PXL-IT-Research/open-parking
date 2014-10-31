@@ -1,4 +1,4 @@
-package be.pxl.it.network;
+package be.pxl.itresearch.io;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

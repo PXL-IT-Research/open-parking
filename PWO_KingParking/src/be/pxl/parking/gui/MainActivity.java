@@ -1,4 +1,4 @@
-package be.pxl.stilkin.kingparking;
+package be.pxl.parking.gui;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import be.pxl.parking.antwerpen.AntwerpUtils;
+import be.pxl.parking.brussel.BrusselsUtils;
+import be.pxl.stilkin.kingparking.R;
 
 public class MainActivity extends Activity {
 	private MapFragment mapFrag;
@@ -25,9 +27,11 @@ public class MainActivity extends Activity {
 		fragmentTransaction.commit();
 
 		AntwerpUtils antwerp = new AntwerpUtils(mapFrag);
-		antwerp.loadAntwerpParkingZones(this);
-
+		antwerp.loadParkings(this);
 		// TODO: add refresh button?
+		
+		BrusselsUtils brussels = new BrusselsUtils(mapFrag);
+		brussels.loadParkings(this);
 	}
 
 	@Override
