@@ -8,6 +8,7 @@ import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -65,13 +66,14 @@ public class BrusselsUtils extends CityParkings {
 		@Override
 		public void onOperationCompleted(String result) {
 			// save to file?
-			FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, mapFrag.getActivity());
+			FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
 			writeTask.execute(CACHE_FILENAME_BRUSSELS, result);
 			Log.d("HttpGetCallBackHandler", "Saving to cache");
 			processJsonResult(result);
 		}
 	}
 
+	@SuppressLint("DefaultLocale")
 	public void processJsonResult(String json) {
 		Log.d("parseJsonResult", "Displaying data");
 
@@ -81,7 +83,7 @@ public class BrusselsUtils extends CityParkings {
 		}
 
 		ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
-		final Drawable parking_marker = mapFrag.getActivity().getResources().getDrawable(R.drawable.ic_parking_marker);
+		final Drawable parking_marker = getContext().getResources().getDrawable(R.drawable.ic_parking_marker);
 
 		List<BxlParking> parkings = parseJson(json);
 		List<Double> coords;
@@ -98,12 +100,12 @@ public class BrusselsUtils extends CityParkings {
 			}
 		}
 
-		final ResourceProxyImpl resourceProxy = new ResourceProxyImpl(mapFrag.getActivity());
+		final ResourceProxyImpl resourceProxy = new ResourceProxyImpl(getContext());
 		this.mMyLocationOverlay = new ItemizedIconOverlay<OverlayItem>(items,
 				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
 					@Override
 					public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
-						Toast.makeText(mapFrag.getActivity(), item.getSnippet(), Toast.LENGTH_LONG)
+						Toast.makeText(getContext(), item.getSnippet(), Toast.LENGTH_LONG)
 								.show();
 						return true; // We 'handled' this event.
 					}

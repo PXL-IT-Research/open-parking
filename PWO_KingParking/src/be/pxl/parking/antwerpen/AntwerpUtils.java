@@ -75,7 +75,7 @@ public class AntwerpUtils extends CityParkings {
 		@Override
 		public void onOperationCompleted(String result) {
 			// save to file?
-			FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, mapFrag.getActivity());
+			FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
 			writeTask.execute(AntwerpUtils.CACHE_FILENAME_ANTWERP, result);
 //			Log.d("GetCallBackHandler", "Saving to cache");
 			processJsonParkeerzones(result);
@@ -92,7 +92,7 @@ public class AntwerpUtils extends CityParkings {
 		}
 
 		List<ParkeerZone> zones = AntwerpUtils.parseJson(json);
-		zoneOverlays = AntwerpUtils.generateParkingzoneOverlays(zones, mapFrag.getActivity());
+		zoneOverlays = AntwerpUtils.generateParkingzoneOverlays(zones, getContext());
 		for (Overlay zone : zoneOverlays) {
 			mapFrag.addOverlay(zone);
 		}

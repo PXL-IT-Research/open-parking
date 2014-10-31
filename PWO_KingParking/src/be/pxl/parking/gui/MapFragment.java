@@ -1,13 +1,9 @@
 package be.pxl.parking.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
-import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -44,7 +40,7 @@ public class MapFragment extends Fragment {
 		this.mMapView = new MapView(inflater.getContext(), 256, this.mResourceProxy);
 		this.mMapView.setMinZoomLevel(MIN_ZOOM_LEVEL);
 		// disable openGL to increase texture size
-		this.mMapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); 
+		this.mMapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		return this.mMapView;
 	}
 
@@ -74,16 +70,12 @@ public class MapFragment extends Fragment {
 		this.mMapView.getOverlays().add(overlay);
 		this.mMapView.invalidate();
 	}
-	
+
 	public void removeOverlay(Overlay overlay) {
 		this.mMapView.getOverlays().remove(overlay);
 		this.mMapView.invalidate();
 	}
-	
-	public void addOverlayItems(List<OverlayItem> items) {
-		
-	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -105,10 +97,10 @@ public class MapFragment extends Fragment {
 	private class LocationHandler implements LocationListener {
 		@Override
 		public void onLocationChanged(Location location) {
-//			IMapController controller = ParkingMapFragment.this.mMapView.getController();
-//			if (ParkingMapFragment.this.mMapView.getZoomLevel() < 17) {
-//				controller.setZoom(17);
-//			}
+			// IMapController controller = ParkingMapFragment.this.mMapView.getController();
+			// if (ParkingMapFragment.this.mMapView.getZoomLevel() < 17) {
+			// controller.setZoom(17);
+			// }
 
 			Point p = TileSystem.LatLongToPixelXY(location.getLatitude(), location.getLongitude(),
 					MapFragment.this.mMapView.getZoomLevel(), null);
