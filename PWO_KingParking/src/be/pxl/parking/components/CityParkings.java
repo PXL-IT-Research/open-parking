@@ -5,11 +5,9 @@ import be.pxl.parking.gui.MapFragment;
 
 public abstract class CityParkings {
 	protected final MapFragment mapFrag;
-	protected final Context context;
 
 	public CityParkings(MapFragment mapFrag) {
 		this.mapFrag = mapFrag;
-		context = this.mapFrag.getActivity();
 	}
 
 	/**
@@ -20,6 +18,6 @@ public abstract class CityParkings {
 	public abstract void loadParkings(Context ctx);
 
 	public Context getContext() {
-		return context;
+		return this.mapFrag.getActivity();
 	}
 }

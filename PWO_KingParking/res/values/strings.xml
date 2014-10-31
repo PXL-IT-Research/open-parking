@@ -3,5 +3,7 @@
 
     <string name="app_name">KingParking</string>
     <string name="item_snapToLocation">Snap to Location</string>
- <string name="item_snapToLocation_condensed">Go To Me</string>
+    <string name="item_snapToLocation_condensed">Go To Me</string>
+    <string name="item_search">Search on the map</string>
+
 </resources>
