@@ -66,7 +66,7 @@ public class AntwerpUtils extends CityParkings {
 
 	public void loadAntwerpParkingZonesFromWeb() {
 		// load from site
-//		Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
+		// Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
 		HttpGetAsyncTask getTask = new HttpGetAsyncTask(new HttpGetCallBackHandler());
 		getTask.execute(ANTWERP_ZONES_URL);
 	}
@@ -74,16 +74,25 @@ public class AntwerpUtils extends CityParkings {
 	private class HttpGetCallBackHandler implements IAsyncCallback<String> {
 		@Override
 		public void onOperationCompleted(String result) {
-			// save to file?
-			FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
-			writeTask.execute(AntwerpUtils.CACHE_FILENAME_ANTWERP, result);
-//			Log.d("GetCallBackHandler", "Saving to cache");
-			processJsonParkeerzones(result);
+			if (result != null && result.length() > 0) {
+				// save to file?
+				FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
+				writeTask.execute(AntwerpUtils.CACHE_FILENAME_ANTWERP, result);
+				// Log.d("GetCallBackHandler", "Saving to cache");
+				processJsonParkeerzones(result);
+			}
 		}
 	}
 
 	public void processJsonParkeerzones(String json) {
-		Log.d("processJsonParkeerzones", "Displaying Antwerp data");
+		Log.d("processJsonParkeerzones", "Displaying Antwerp data: ");
+
+		List<ParkeerZone> zones = AntwerpUtils.parseJson(json);
+		if (zones == null) {
+			return;
+		}
+
+		// remove previous data
 		if (zoneOverlays != null) {
 			for (Overlay zone : zoneOverlays) {
 				mapFrag.removeOverlay(zone);
@@ -91,7 +100,7 @@ public class AntwerpUtils extends CityParkings {
 			zoneOverlays.clear();
 		}
 
-		List<ParkeerZone> zones = AntwerpUtils.parseJson(json);
+		// display new data
 		zoneOverlays = AntwerpUtils.generateParkingzoneOverlays(zones, getContext());
 		for (Overlay zone : zoneOverlays) {
 			mapFrag.addOverlay(zone);

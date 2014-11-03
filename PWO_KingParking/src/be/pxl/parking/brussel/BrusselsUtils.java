@@ -65,27 +65,28 @@ public class BrusselsUtils extends CityParkings {
 	private class HttpGetCallBackHandler implements IAsyncCallback<String> {
 		@Override
 		public void onOperationCompleted(String result) {
-			// save to file?
-			FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
-			writeTask.execute(CACHE_FILENAME_BRUSSELS, result);
-			Log.d("HttpGetCallBackHandler", "Saving to cache");
-			processJsonResult(result);
+			if (result != null && result.length() > 0) {
+				// save to file?
+				FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
+				writeTask.execute(CACHE_FILENAME_BRUSSELS, result);
+				Log.d("HttpGetCallBackHandler", "Saving to cache");
+				
+				processJsonResult(result);
+			}	
 		}
 	}
 
 	@SuppressLint("DefaultLocale")
 	public void processJsonResult(String json) {
-		Log.d("parseJsonResult", "Displaying data");
-
-		if (mMyLocationOverlay != null) {
-			mapFrag.removeOverlay(mMyLocationOverlay);
-			mMyLocationOverlay.removeAllItems();
-		}
-
-		ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
-		final Drawable parking_marker = getContext().getResources().getDrawable(R.drawable.ic_parking_marker);
+		Log.d("processJsonResult", "Displaying Brussels data: " );
 
 		List<BxlParking> parkings = parseJson(json);
+		if (parkings == null) { // nothing to display
+			return;
+		}
+
+		final Drawable parking_marker = getContext().getResources().getDrawable(R.drawable.ic_parking_marker);
+		ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
 		List<Double> coords;
 		OverlayItem overlayItem;
 		for (BxlParking parking : parkings) {
@@ -99,7 +100,14 @@ public class BrusselsUtils extends CityParkings {
 				items.add(overlayItem);
 			}
 		}
+		
+		// remove previous data
+		if (mMyLocationOverlay != null) {
+			mapFrag.removeOverlay(mMyLocationOverlay);
+			mMyLocationOverlay.removeAllItems();
+		}
 
+		// display new data
 		final ResourceProxyImpl resourceProxy = new ResourceProxyImpl(getContext());
 		this.mMyLocationOverlay = new ItemizedIconOverlay<OverlayItem>(items,
 				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
@@ -132,7 +140,7 @@ public class BrusselsUtils extends CityParkings {
 		}
 		if (parkeerWrapper != null) {
 			records = parkeerWrapper.getRecords();
-			parkings = new ArrayList<BxlParking>();
+			parkings = new ArrayList<BxlParking>(); 
 			if (records != null) {
 				BxlParking parking;
 				for (BxlParkingRecord record : records) {
