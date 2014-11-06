@@ -1,10 +1,14 @@
 package be.pxl.parking.gui;
 
+import java.util.ArrayList;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -19,6 +23,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class MapFragment extends Fragment {
 	private static final String PREFS_NAME = "openmaps_prefs";
@@ -34,6 +39,7 @@ public class MapFragment extends Fragment {
 	private ResourceProxyImpl mResourceProxy;
 	private MapView mMapView;
 	private MyLocationNewOverlay mLocationOverlay;
+	private ItemizedIconOverlay<OverlayItem> mItemOverlay;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +71,50 @@ public class MapFragment extends Fragment {
 		this.mLocationOverlay = new MyLocationNewOverlay(context, locProvider, this.mMapView);
 		this.mLocationOverlay.enableMyLocation();
 		this.mMapView.getOverlays().add(this.mLocationOverlay);
+	}
+
+	/**
+	 * Add an item to the default overlay
+	 * 
+	 * @param item
+	 */
+	public void addOverlayItem(OverlayItem item) {
+		if (mItemOverlay == null) {
+			initItemOverlay();
+		}
+		mItemOverlay.addItem(item);
+		// TODO: do we need to refresh this?
+	}
+
+	public void removeOverlayItem(OverlayItem item) {
+		if (mItemOverlay == null) {
+			return;
+		}
+		mItemOverlay.removeItem(item);
+	}
+
+	private void initItemOverlay() {
+		ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+
+		// display new data
+		final ResourceProxyImpl resourceProxy = new ResourceProxyImpl(getActivity());
+		this.mItemOverlay = new ItemizedIconOverlay<OverlayItem>(items,
+				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+					@Override
+					public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+						Toast.makeText(MapFragment.this.getActivity(), item.getSnippet(),
+								Toast.LENGTH_LONG).show();
+						return true; // We 'handled' this event.
+					}
+
+					@Override
+					public boolean onItemLongPress(final int index, final OverlayItem item) {
+						// TODO: show persistent popup
+						return false;
+					}
+				}, resourceProxy);
+
+		addOverlay(mItemOverlay);
 	}
 
 	public void addOverlay(Overlay overlay) {

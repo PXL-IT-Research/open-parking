@@ -1,5 +1,8 @@
 package be.pxl.parking.gui;
 
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.OverlayItem;
+
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -20,6 +23,7 @@ import be.pxl.stilkin.kingparking.R;
 public class MainActivity extends Activity {
 	private MapFragment mapFrag;
 	private SearchView searchView;
+	private OverlayItem overlayItem;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +54,21 @@ public class MainActivity extends Activity {
 		if (Intent.ACTION_VIEW.equalsIgnoreCase(intent.getAction())) {
 			String osmJson = intent.getExtras().getString(SearchManager.EXTRA_DATA_KEY);
 			OsmResult result = OsmSearchUtils.convertJsonToOsmResult(osmJson);
-			// TODO: add result marker
 			
-			// scroll to position
 			if (result != null) {
 				double latitude = Double.parseDouble(result.getLat());
 				double longitude = Double.parseDouble(result.getLon());
+				
+				if (overlayItem != null) {
+					this.mapFrag.removeOverlayItem(overlayItem);
+				}
+				
+				//  add result marker
+				GeoPoint location = new GeoPoint(latitude, longitude);
+				overlayItem = new OverlayItem(result.getDisplay_name(), result.getDisplay_name(), location);
+				this.mapFrag.addOverlayItem(overlayItem);
+				
+				// scroll to position				
 				this.mapFrag.focusOnPosition(latitude, longitude, 17);
 			}
 		}
