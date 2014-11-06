@@ -1,5 +1,6 @@
 package be.pxl.parking.gui;
 
+import org.osmdroid.api.IMapController;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
@@ -97,10 +98,10 @@ public class MapFragment extends Fragment {
 	private class LocationHandler implements LocationListener {
 		@Override
 		public void onLocationChanged(Location location) {
-			// IMapController controller = ParkingMapFragment.this.mMapView.getController();
-			// if (ParkingMapFragment.this.mMapView.getZoomLevel() < 17) {
-			// controller.setZoom(17);
-			// }
+			IMapController controller = MapFragment.this.mMapView.getController();
+			if (MapFragment.this.mMapView.getZoomLevel() < DEFAULT_ZOOM_LEVEL) {
+				controller.setZoom(DEFAULT_ZOOM_LEVEL);
+			}
 
 			Point p = TileSystem.LatLongToPixelXY(location.getLatitude(), location.getLongitude(),
 					MapFragment.this.mMapView.getZoomLevel(), null);

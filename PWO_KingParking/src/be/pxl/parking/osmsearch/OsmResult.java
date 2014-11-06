@@ -3,6 +3,7 @@ package be.pxl.parking.osmsearch;
 import com.google.gson.annotations.SerializedName;
 
 public class OsmResult {
+	private String osm_id;
 	private String lat;
 	private String lon;
 	private String display_name;
@@ -57,6 +58,14 @@ public class OsmResult {
 
 	public synchronized void setImportance(double importance) {
 		this.importance = importance;
+	}
+
+	public synchronized String getOsm_id() {
+		return osm_id;
+	}
+
+	public synchronized void setOsm_id(String osm_id) {
+		this.osm_id = osm_id;
 	}
 
 	@Override

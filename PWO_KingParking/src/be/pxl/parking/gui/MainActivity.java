@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		public boolean onQueryTextSubmit(String query) {
-			OsmSearchUtils.searchOsm(query, new SearchCallbackHandler());
+			OsmSearchUtils.searchOsmInBackground(query, new SearchCallbackHandler());
 	        searchView.setIconified(true);
 			searchView.clearFocus();
 			return true;
