@@ -87,27 +87,34 @@ public class MapFragment extends Fragment {
 		edit.commit();
 	}
 
-	public void focusOnPosition() {
-		// focus on position
+	public void focusOnUserPosition() {
+		// track user position
 		LocationManager mLocMgr = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
 		mLocMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10,
 				new LocationHandler());
 	}
 
+	public void focusOnPosition(double latitude, double longitude, int zoomlevel) {
+		IMapController controller = MapFragment.this.mMapView.getController();
+		if (MapFragment.this.mMapView.getZoomLevel() < zoomlevel) {
+			controller.setZoom(zoomlevel);
+		}
+		Point p = TileSystem.LatLongToPixelXY(latitude, longitude,
+				MapFragment.this.mMapView.getZoomLevel(), null);
+		p.x -= MapFragment.this.mMapView.getWidth() / 2;
+		p.y -= MapFragment.this.mMapView.getHeight() / 2;
+		MapFragment.this.mMapView.scrollTo(p.x, p.y);
+	}
+
+	public void focusOnPosition(double latitude, double longitude) {
+		focusOnPosition(latitude, longitude, DEFAULT_ZOOM_LEVEL);
+	}
+
 	private class LocationHandler implements LocationListener {
 		@Override
 		public void onLocationChanged(Location location) {
-			IMapController controller = MapFragment.this.mMapView.getController();
-			if (MapFragment.this.mMapView.getZoomLevel() < DEFAULT_ZOOM_LEVEL) {
-				controller.setZoom(DEFAULT_ZOOM_LEVEL);
-			}
-
-			Point p = TileSystem.LatLongToPixelXY(location.getLatitude(), location.getLongitude(),
-					MapFragment.this.mMapView.getZoomLevel(), null);
-			p.x -= MapFragment.this.mMapView.getWidth() / 2;
-			p.y -= MapFragment.this.mMapView.getHeight() / 2;
-			MapFragment.this.mMapView.scrollTo(p.x, p.y);
+			focusOnPosition(location.getLatitude(), location.getLongitude());
 		}
 
 		@Override

@@ -1,17 +1,16 @@
 package be.pxl.parking.gui;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
-import android.widget.SearchView.OnQueryTextListener;
-import be.pxl.itresearch.io.IAsyncCallback;
 import be.pxl.parking.antwerpen.AntwerpUtils;
 import be.pxl.parking.brussel.BrusselsUtils;
 import be.pxl.parking.osmsearch.OsmResult;
@@ -41,7 +40,25 @@ public class MainActivity extends Activity {
 
 		BrusselsUtils brussels = new BrusselsUtils(mapFrag);
 		brussels.loadParkings(this);
+	}
 
+	@Override
+	protected void onNewIntent(Intent intent) {
+		// super.onNewIntent(intent);
+		Log.d("onNewIntent", intent.getAction());
+
+		if (Intent.ACTION_VIEW.equalsIgnoreCase(intent.getAction())) {
+			String osmJson = intent.getExtras().getString(SearchManager.EXTRA_DATA_KEY);
+			OsmResult result = OsmSearchUtils.convertJsonToOsmResult(osmJson);
+			// TODO: add result marker
+			
+			// scroll to position
+			if (result != null) {
+				double latitude = Double.parseDouble(result.getLat());
+				double longitude = Double.parseDouble(result.getLon());
+				this.mapFrag.focusOnPosition(latitude, longitude, 17);
+			}
+		}
 	}
 
 	@Override
@@ -49,40 +66,18 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main_menu, menu);
 		MenuItem menuItem = menu.findItem(R.id.item_search);
 		searchView = (SearchView) menuItem.getActionView();
-		searchView.setOnQueryTextListener(new SearchHandler());
+
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.item_snapToLocation) {
-			this.mapFrag.focusOnPosition();
+			this.mapFrag.focusOnUserPosition();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	private class SearchHandler implements OnQueryTextListener {
-
-		@Override
-		public boolean onQueryTextChange(String query) {
-			return false;
-		}
-
-		@Override
-		public boolean onQueryTextSubmit(String query) {
-			OsmSearchUtils.searchOsmInBackground(query, new SearchCallbackHandler());
-	        searchView.setIconified(true);
-			searchView.clearFocus();
-			return true;
-		}
-	}
-
-	private class SearchCallbackHandler implements IAsyncCallback<List<OsmResult>> {
-		@Override
-		public void onOperationCompleted(List<OsmResult> result) {
-			Log.d("SearchCallbackHandler", "" + result);
-			// TODO Auto-generated method stub
-		}
 	}
 }

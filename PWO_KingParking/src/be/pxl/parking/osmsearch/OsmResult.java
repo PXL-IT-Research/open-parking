@@ -1,8 +1,11 @@
 package be.pxl.parking.osmsearch;
 
+import java.io.Serializable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class OsmResult {
+public class OsmResult implements Serializable {
+	private transient static final long serialVersionUID = -2171634701227233092L;
 	private String osm_id;
 	private String lat;
 	private String lon;

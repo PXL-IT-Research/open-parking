@@ -1,7 +1,9 @@
 package be.pxl.parking.osmsearch;
 
 import java.util.List;
+import java.util.Locale;
 
+import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -22,35 +24,35 @@ public class OsmSearchProvider extends ContentProvider {
 	public static final String TABLE_NAME = "results";
 	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 
-	public static class OsmResultContract implements BaseColumns {
-		public static final String COL_LAT = "lat";
-		public static final String COL_LON = "lon";
-		public static final String COL_NAME = "display_name";
-		public static final String COL_TYPE = "type";
-		public static final String COL_CLASS = "class";
-		public static final String COL_IMPORTANCE = "importance";
-	}
-
-	private final String[] defaultColumns = { OsmResultContract._ID, OsmResultContract.COL_LAT,
-			OsmResultContract.COL_LON, OsmResultContract.COL_NAME, OsmResultContract.COL_TYPE,
-			OsmResultContract.COL_CLASS, OsmResultContract.COL_IMPORTANCE };
+	private final String[] defaultColumns = { BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1,
+			SearchManager.SUGGEST_COLUMN_TEXT_2, SearchManager.SUGGEST_COLUMN_INTENT_EXTRA_DATA };
 
 	@Override
 	public boolean onCreate() {
 		return false;
 	}
 
+	/**
+	 * Handle query requests from clients
+	 * 
+	 * @param uri
+	 *            The default behavior is for system to pass this URI and append it with the query text. For example:
+	 *            content://your.authority/optional.suggest.path/SUGGEST_URI_PATH_QUERY/puppies
+	 * @param projection
+	 *            Always null
+	 * @param selection
+	 *            Always null
+	 * @param selectionArgs
+	 *            Always null
+	 * @param sortOrder
+	 *            Always null
+	 */
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
 			String sortOrder) {
 
-		if (projection == null || projection.length < 1) {
-			// make sure we have some columns
-			projection = defaultColumns;
-		}
+		MatrixCursor mxCur = new MatrixCursor(defaultColumns);
 
-		MatrixCursor mxCur = new MatrixCursor(projection);
-		
 		// This returns the last segment of the Uri, which should be the query text entered by the user.
 		String query = uri.getLastPathSegment();
 
@@ -59,29 +61,10 @@ public class OsmSearchProvider extends ContentProvider {
 			RowBuilder row;
 			for (OsmResult result : resultList) {
 				row = mxCur.newRow();
-				for (String column : projection) {
-					if (OsmResultContract._ID.equals(column)) {
-						row.add(result.getOsm_id());
-					}
-					if (OsmResultContract.COL_LAT.equals(column)) {
-						row.add(result.getLat());
-					}
-					if (OsmResultContract.COL_LON.equals(column)) {
-						row.add(result.getLon());
-					}
-					if (OsmResultContract.COL_NAME.equals(column)) {
-						row.add(result.getDisplay_name());
-					}
-					if (OsmResultContract.COL_TYPE.equals(column)) {
-						row.add(result.getType());
-					}
-					if (OsmResultContract.COL_CLASS.equals(column)) {
-						row.add(result.getClass_name());
-					}
-					if (OsmResultContract.COL_IMPORTANCE.equals(column)) {
-						row.add(result.getImportance());
-					}
-				}
+				row.add(result.getOsm_id());
+				row.add(result.getDisplay_name());
+				row.add(result.getType().toUpperCase(Locale.ENGLISH));
+				row.add(OsmSearchUtils.convertOsmResultToJson(result));
 			}
 		}
 

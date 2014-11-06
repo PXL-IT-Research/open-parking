@@ -33,14 +33,14 @@ public class OsmSearchUtils {
 
 		@Override
 		public void onOperationCompleted(String result) {
-			List<OsmResult> resultList = convertJsonToOsmResult(result);
+			List<OsmResult> resultList = convertJsonArrayToOsmResultList(result);
 			if (uiCallback != null) {
 				uiCallback.onOperationCompleted(resultList);
 			}
 		}
 	}
 
-	public static List<OsmResult> convertJsonToOsmResult(String json) {
+	public static List<OsmResult> convertJsonArrayToOsmResultList(String json) {
 		Gson jsonHelper = new Gson();
 		List<OsmResult> resultList = null;
 		TypeToken<List<OsmResult>> listType = new TypeToken<List<OsmResult>>() {
@@ -57,7 +57,24 @@ public class OsmSearchUtils {
 		searchString = Uri.encode(searchString + LOCALIZED_SEARCH);
 		String url = String.format(OSM_SEARCH_URL_FORMAT, searchString);
 		String resultJson = HttpIO.getHttpGetRequestContent(url);
-		return convertJsonToOsmResult(resultJson);
+		return convertJsonArrayToOsmResultList(resultJson);
+	}
+
+	public static String convertOsmResultToJson(OsmResult result) {
+		Gson jsonHelper = new Gson();
+		return jsonHelper.toJson(result, OsmResult.class);
+	}
+
+	public static OsmResult convertJsonToOsmResult(String json) {
+		Gson jsonHelper = new Gson();
+		OsmResult result = null;
+
+		try {
+			result = jsonHelper.fromJson(json, OsmResult.class);
+		} catch (JsonSyntaxException jse) {
+			jse.printStackTrace();
+		}
+		return result;
 	}
 
 }

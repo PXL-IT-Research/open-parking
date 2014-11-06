@@ -18,7 +18,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.view.View;
 
 /**
  * 
