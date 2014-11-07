@@ -1,4 +1,4 @@
-package be.pxl.parking.brussel;
+package be.pxl.parkingdata.brussel;
 
 public class BxlParkingRecord {
 	private String datasetid;

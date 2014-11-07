@@ -1,4 +1,4 @@
-package be.pxl.parking.brussel;
+package be.pxl.parkingdata.brussel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +24,16 @@ import be.pxl.stilkin.kingparking.R;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+/**
+ * 
+ * @author stilkin
+ *
+ */
 public class BrusselsUtils extends CityParkings {
 	public static final String BRUSSELS_PARKINGS_URL = "http://opendata.brussel.be/api/records/1.0/search?dataset=bruxelles_parkings_publics";
 	public static final String CACHE_FILENAME_BRUSSELS = "parking_cache_brussels";
 
-	private ItemizedIconOverlay<OverlayItem> mMyLocationOverlay;
+	private ItemizedIconOverlay<OverlayItem> mBxlParkingOverlay;
 
 	public BrusselsUtils(MapFragment mapFrag) {
 		super(mapFrag);
@@ -57,7 +62,7 @@ public class BrusselsUtils extends CityParkings {
 
 	public void loadBrusselsParkingsFromWeb() {
 		// load from site
-		Log.d("loadBrusselsParkingsFromWeb", "Fetching data from web resource");
+//		Log.d("loadBrusselsParkingsFromWeb", "Fetching data from web resource");
 		HttpGetAsyncTask getTask = new HttpGetAsyncTask(new HttpGetCallBackHandler());
 		getTask.execute(BRUSSELS_PARKINGS_URL);
 	}
@@ -69,7 +74,6 @@ public class BrusselsUtils extends CityParkings {
 				// save to file?
 				FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
 				writeTask.execute(CACHE_FILENAME_BRUSSELS, result);
-				Log.d("HttpGetCallBackHandler", "Saving to cache");
 				
 				processJsonResult(result);
 			}	
@@ -102,14 +106,14 @@ public class BrusselsUtils extends CityParkings {
 		}
 		
 		// remove previous data
-		if (mMyLocationOverlay != null) {
-			mapFrag.removeOverlay(mMyLocationOverlay);
-			mMyLocationOverlay.removeAllItems();
+		if (mBxlParkingOverlay != null) {
+			mapFrag.removeOverlay(mBxlParkingOverlay);
+			mBxlParkingOverlay.removeAllItems();
 		}
 
 		// display new data
 		final ResourceProxyImpl resourceProxy = new ResourceProxyImpl(getContext());
-		this.mMyLocationOverlay = new ItemizedIconOverlay<OverlayItem>(items,
+		this.mBxlParkingOverlay = new ItemizedIconOverlay<OverlayItem>(items,
 				new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
 					@Override
 					public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
@@ -125,7 +129,7 @@ public class BrusselsUtils extends CityParkings {
 					}
 				}, resourceProxy);
 
-		mapFrag.addOverlay(mMyLocationOverlay);
+		mapFrag.addOverlay(mBxlParkingOverlay);
 	}
 
 	public static List<BxlParking> parseJson(String parkeerJson) {

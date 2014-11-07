@@ -1,4 +1,4 @@
-package be.pxl.parking.antwerpen;
+package be.pxl.parkingdata.antwerpen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,11 @@ import be.pxl.parking.gui.MyPathOverlay;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+/**
+ * 
+ * @author stilkin
+ * 
+ */
 public class AntwerpUtils extends CityParkings {
 	public static final String ANTWERP_ZONES_URL = "http://datasets.antwerpen.be/v1/geografie/paparkeertariefzones.json";
 	public static final String CACHE_FILENAME_ANTWERP = "parking_cache_antwerp";
@@ -66,7 +71,7 @@ public class AntwerpUtils extends CityParkings {
 
 	public void loadAntwerpParkingZonesFromWeb() {
 		// load from site
-		// Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
+//		Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
 		HttpGetAsyncTask getTask = new HttpGetAsyncTask(new HttpGetCallBackHandler());
 		getTask.execute(ANTWERP_ZONES_URL);
 	}
@@ -78,7 +83,7 @@ public class AntwerpUtils extends CityParkings {
 				// save to file?
 				FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
 				writeTask.execute(AntwerpUtils.CACHE_FILENAME_ANTWERP, result);
-				// Log.d("GetCallBackHandler", "Saving to cache");
+
 				processJsonParkeerzones(result);
 			}
 		}

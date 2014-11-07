@@ -1,4 +1,4 @@
-package be.pxl.parking.antwerpen;
+package be.pxl.parkingdata.antwerpen;
 
 import java.util.List;
 

@@ -14,12 +14,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
-import be.pxl.parking.antwerpen.AntwerpUtils;
-import be.pxl.parking.brussel.BrusselsUtils;
 import be.pxl.parking.osmsearch.OsmResult;
 import be.pxl.parking.osmsearch.OsmSearchUtils;
+import be.pxl.parkingdata.antwerpen.AntwerpUtils;
+import be.pxl.parkingdata.brussel.BrusselsUtils;
+import be.pxl.parkingdata.kortrijk.KortrijkUtils;
 import be.pxl.stilkin.kingparking.R;
 
+/**
+ * 
+ * @author stilkin
+ * 
+ */
 public class MainActivity extends Activity {
 	private MapFragment mapFrag;
 	private SearchView searchView;
@@ -38,12 +44,18 @@ public class MainActivity extends Activity {
 		fragmentTransaction.add(R.id.ll_vertical, this.mapFrag);
 		fragmentTransaction.commit();
 
+		loadParkingData();
+	}
+
+	private void loadParkingData() {
 		AntwerpUtils antwerp = new AntwerpUtils(mapFrag);
 		antwerp.loadParkings(this);
-		// TODO: add refresh button?
 
 		BrusselsUtils brussels = new BrusselsUtils(mapFrag);
 		brussels.loadParkings(this);
+
+		KortrijkUtils kortrijk = new KortrijkUtils(mapFrag);
+		kortrijk.loadParkings(this);
 	}
 
 	@Override
@@ -54,21 +66,22 @@ public class MainActivity extends Activity {
 		if (Intent.ACTION_VIEW.equalsIgnoreCase(intent.getAction())) {
 			String osmJson = intent.getExtras().getString(SearchManager.EXTRA_DATA_KEY);
 			OsmResult result = OsmSearchUtils.convertJsonToOsmResult(osmJson);
-			
+
 			if (result != null) {
 				double latitude = Double.parseDouble(result.getLat());
 				double longitude = Double.parseDouble(result.getLon());
-				
+
 				if (overlayItem != null) {
 					this.mapFrag.removeOverlayItem(overlayItem);
 				}
-				
-				//  add result marker
+
+				// add result marker
 				GeoPoint location = new GeoPoint(latitude, longitude);
-				overlayItem = new OverlayItem(result.getDisplay_name(), result.getDisplay_name(), location);
+				overlayItem = new OverlayItem(result.getDisplay_name(), result.getDisplay_name(),
+						location);
 				this.mapFrag.addOverlayItem(overlayItem);
-				
-				// scroll to position				
+
+				// scroll to position
 				this.mapFrag.focusOnPosition(latitude, longitude, 17);
 			}
 		}
