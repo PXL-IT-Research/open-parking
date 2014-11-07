@@ -39,8 +39,8 @@ public class AntwerpUtils extends CityParkings {
 
 	private List<Overlay> zoneOverlays;
 
-	public AntwerpUtils(MapFragment mapFrag) {
-		super(mapFrag);
+	public AntwerpUtils(MapFragment mapFrag, Context ctx) {
+		super(mapFrag, ctx);
 	}
 
 	/**

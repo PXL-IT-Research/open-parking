@@ -47,8 +47,8 @@ public class KortrijkUtils extends CityParkings {
 	private static final String XML_STREETNAME_TAG = "StreetName";
 	private ItemizedIconOverlay<OverlayItem> mKrtParkingOverlay;
 
-	public KortrijkUtils(MapFragment mapFrag) {
-		super(mapFrag);
+	public KortrijkUtils(MapFragment mapFrag, Context ctx) {
+		super(mapFrag, ctx);
 	}
 
 	@Override

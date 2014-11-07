@@ -35,8 +35,8 @@ public class GentUtils extends CityParkings {
 
 	private ItemizedIconOverlay<OverlayItem> mGentParkingOverlay;
 
-	public GentUtils(MapFragment mapFrag) {
-		super(mapFrag);
+	public GentUtils(MapFragment mapFrag, Context ctx) {
+		super(mapFrag, ctx);
 	}
 
 	@Override

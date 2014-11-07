@@ -37,28 +37,31 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.empty_linearlayout);
 
-		this.mapFrag = new MapFragment();
+		if (mapFrag == null) {
+			Log.w("onCreate","creating new map fragment");
+			this.mapFrag = new MapFragment();
+			
+			FragmentManager fragmentManager = getFragmentManager();
 
-		FragmentManager fragmentManager = getFragmentManager();
-
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.add(R.id.ll_vertical, this.mapFrag);
-		fragmentTransaction.commit();
+			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+			fragmentTransaction.add(R.id.ll_vertical, this.mapFrag);
+			fragmentTransaction.commit();
+		}
 
 		loadParkingData();
 	}
 
 	private void loadParkingData() {
-		AntwerpUtils antwerp = new AntwerpUtils(mapFrag);
+		AntwerpUtils antwerp = new AntwerpUtils(mapFrag, this);
 		antwerp.loadParkings(this);
 
-		BrusselsUtils brussels = new BrusselsUtils(mapFrag);
+		BrusselsUtils brussels = new BrusselsUtils(mapFrag, this);
 		brussels.loadParkings(this);
 
-		KortrijkUtils kortrijk = new KortrijkUtils(mapFrag);
+		KortrijkUtils kortrijk = new KortrijkUtils(mapFrag, this);
 		kortrijk.loadParkings(this);
 
-		GentUtils gent = new GentUtils(mapFrag);
+		GentUtils gent = new GentUtils(mapFrag, this);
 		gent.loadParkings(this);
 	}
 

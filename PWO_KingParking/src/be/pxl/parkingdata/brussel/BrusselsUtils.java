@@ -35,8 +35,8 @@ public class BrusselsUtils extends CityParkings {
 
 	private ItemizedIconOverlay<OverlayItem> mBxlParkingOverlay;
 
-	public BrusselsUtils(MapFragment mapFrag) {
-		super(mapFrag);
+	public BrusselsUtils(MapFragment mapFrag, Context ctx) {
+		super(mapFrag, ctx);
 	}
 
 	@Override
