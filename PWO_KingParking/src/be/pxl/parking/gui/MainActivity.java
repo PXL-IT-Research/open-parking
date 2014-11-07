@@ -18,6 +18,7 @@ import be.pxl.parking.osmsearch.OsmResult;
 import be.pxl.parking.osmsearch.OsmSearchUtils;
 import be.pxl.parkingdata.antwerpen.AntwerpUtils;
 import be.pxl.parkingdata.brussel.BrusselsUtils;
+import be.pxl.parkingdata.gent.GentUtils;
 import be.pxl.parkingdata.kortrijk.KortrijkUtils;
 import be.pxl.stilkin.kingparking.R;
 
@@ -56,6 +57,9 @@ public class MainActivity extends Activity {
 
 		KortrijkUtils kortrijk = new KortrijkUtils(mapFrag);
 		kortrijk.loadParkings(this);
+
+		GentUtils gent = new GentUtils(mapFrag);
+		gent.loadParkings(this);
 	}
 
 	@Override
