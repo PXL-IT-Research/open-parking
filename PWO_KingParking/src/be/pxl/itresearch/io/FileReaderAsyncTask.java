@@ -15,16 +15,12 @@ import android.os.AsyncTask;
  * @author Servaas Tilkin
  */
 public class FileReaderAsyncTask extends AsyncTask<String, Void, String> {
-	private IAsyncCallback<String> resultListener;
-	private Context context;
+	final private IAsyncCallback<String> resultListener;
+	final private Context context;
 
 	public FileReaderAsyncTask(IAsyncCallback<String> callback, Context ctx) {
 		this.resultListener = callback;
 		this.context = ctx;
-	}
-
-	private synchronized Context getContext() {
-		return context;
 	}
 
 	@Override
@@ -33,18 +29,18 @@ public class FileReaderAsyncTask extends AsyncTask<String, Void, String> {
 			return null;
 		}
 
-		String fileName = args[0]; // get filename from params
+		final String fileName = args[0]; // get filename from params
 
-		BufferedReader buf_in = null;
-		StringBuilder content = new StringBuilder();
+		BufferedReader bufIn = null;
+		final StringBuilder content = new StringBuilder();
 
 		try {
-			FileInputStream io_in = getContext().openFileInput(fileName);
-			buf_in = new BufferedReader(new InputStreamReader(io_in));
-			String line = buf_in.readLine();
+			final FileInputStream ioIn = context.openFileInput(fileName);
+			bufIn = new BufferedReader(new InputStreamReader(ioIn));
+			String line = bufIn.readLine();
 			while (line != null) {
 				content.append(line);
-				line = buf_in.readLine();
+				line = bufIn.readLine();
 			}
 		} catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
@@ -52,8 +48,8 @@ public class FileReaderAsyncTask extends AsyncTask<String, Void, String> {
 			ioe.printStackTrace();
 		} finally {
 			try {
-				if (buf_in != null) {
-					buf_in.close();
+				if (bufIn != null) {
+					bufIn.close();
 				}
 			} catch (IOException ioe) {
 				ioe.printStackTrace();

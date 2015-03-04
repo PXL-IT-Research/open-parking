@@ -28,7 +28,7 @@ import com.google.gson.JsonSyntaxException;
  */
 public class AntwerpUtils extends CityParkings {
 	public static final String ANTWERP_ZONES_URL = "http://datasets.antwerpen.be/v1/geografie/paparkeertariefzones.json";
-	public static final String CACHE_FILENAME_ANTWERP = "parking_cache_antwerp";
+	public static final String CACHE_FILENAME_ANTWERP = "parking_cache_antwerp"; // NOPMD by stilkin on 4-3-15 13:47
 
 	public static final String RED = "Rood";
 	public static final String BLUE = "Blauw";
@@ -51,7 +51,7 @@ public class AntwerpUtils extends CityParkings {
 	@Override
 	public void loadParkings(Context ctx) {
 		// load from file
-		FileReaderAsyncTask fileTask = new FileReaderAsyncTask(new FileReadCallbackHandler(), ctx);
+		final FileReaderAsyncTask fileTask = new FileReaderAsyncTask(new FileReadCallbackHandler(), ctx);
 		fileTask.execute(CACHE_FILENAME_ANTWERP);
 	}
 
@@ -71,8 +71,8 @@ public class AntwerpUtils extends CityParkings {
 
 	public void loadAntwerpParkingZonesFromWeb() {
 		// load from site
-//		Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
-		HttpGetAsyncTask getTask = new HttpGetAsyncTask(new HttpGetCallBackHandler());
+		// Log.d("loadAntwerpZonesFromWeb", "Fetching data from web resource");
+		final HttpGetAsyncTask getTask = new HttpGetAsyncTask(new HttpGetCallBackHandler());
 		getTask.execute(ANTWERP_ZONES_URL);
 	}
 
@@ -81,7 +81,7 @@ public class AntwerpUtils extends CityParkings {
 		public void onOperationCompleted(String result) {
 			if (result != null && result.length() > 0) {
 				// save to file?
-				FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
+				final FileWriterAsyncTask writeTask = new FileWriterAsyncTask(null, getContext());
 				writeTask.execute(AntwerpUtils.CACHE_FILENAME_ANTWERP, result);
 
 				processJsonParkeerzones(result);
@@ -92,7 +92,7 @@ public class AntwerpUtils extends CityParkings {
 	public void processJsonParkeerzones(String json) {
 		Log.d("processJsonParkeerzones", "Displaying Antwerp data: ");
 
-		List<ParkeerZone> zones = AntwerpUtils.parseJson(json);
+		final List<ParkeerZone> zones = AntwerpUtils.parseJson(json);
 		if (zones == null) {
 			return;
 		}
@@ -115,31 +115,27 @@ public class AntwerpUtils extends CityParkings {
 	/* ** Static methods ** */
 
 	public static int getColorFromString(String colorName) {
+		int color = Color.CYAN;
 		if (RED.equals(colorName)) {
-			return Color.RED;
+			color = Color.RED;
+		} else if (BLUE.equals(colorName)) {
+			color = Color.BLUE;
+		} else if (LIGHT_GREEN.equals(colorName)) {
+			color = Color.GREEN;
+		} else if (ORANGE.equals(colorName)) {
+			color = 0xffff8000;
+		} else if (YELLOW.equals(colorName)) {
+			color = Color.YELLOW;
+		} else if (DARK_GREEN.equals(colorName)) {
+			color = 0xff008020;
 		}
-		if (BLUE.equals(colorName)) {
-			return Color.BLUE;
-		}
-		if (LIGHT_GREEN.equals(colorName)) {
-			return Color.GREEN;
-		}
-		if (ORANGE.equals(colorName)) {
-			return 0xffff8000;
-		}
-		if (YELLOW.equals(colorName)) {
-			return Color.YELLOW;
-		}
-		if (DARK_GREEN.equals(colorName)) {
-			return 0xff008020;
-		}
-		return Color.CYAN;
+		return color;
 	}
 
 	public static List<ParkeerZone> parseJson(String parkeerJson) {
 		List<ParkeerZone> zones = null;
-		Gson jsonHelper = new Gson();
-		ParkeerWrapper parkeerWrapper = jsonHelper.fromJson(parkeerJson, ParkeerWrapper.class);
+		final Gson jsonHelper = new Gson();
+		final ParkeerWrapper parkeerWrapper = jsonHelper.fromJson(parkeerJson, ParkeerWrapper.class);
 		if (parkeerWrapper != null) {
 			zones = parkeerWrapper.getPaparkeertariefzones();
 			if (zones != null) {
@@ -168,15 +164,15 @@ public class AntwerpUtils extends CityParkings {
 	 * @return
 	 */
 	private static String trimWrappingArraysFromPolygons(String json) {
-		json = json.trim();
-		json = json.replace("[[[[", "[[[");
-		json = json.replace("]]]]", "]]]");
-		return json;
+		String trim = json.trim();
+		trim = trim.replace("[[[[", "[[[");
+		trim = trim.replace("]]]]", "]]]");
+		return trim;
 	}
 
 	public static List<Overlay> generateParkingzoneOverlays(List<ParkeerZone> zones, Context ctx) {
-		List<Overlay> overlays = new ArrayList<Overlay>();
-		double latit, longit;
+		final List<Overlay> overlays = new ArrayList<Overlay>();
+		double latit, longit; // NOPMD by stilkin on 4-3-15 13:46
 		int color;
 		Paint paint = new Paint();
 		paint.setStyle(Paint.Style.FILL);

@@ -21,6 +21,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
  */
 public class HttpIO {
 
+	private HttpIO() {
+	}
+
 	/**
 	 * Returns the content of the response to a http request.
 	 * 

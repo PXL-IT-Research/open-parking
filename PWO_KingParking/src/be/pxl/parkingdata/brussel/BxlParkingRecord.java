@@ -6,35 +6,35 @@ public class BxlParkingRecord {
 	private BxlParking fields;
 	private String record_timestamp;
 
-	public synchronized String getDatasetid() {
+	public String getDatasetid() {
 		return datasetid;
 	}
 
-	public synchronized void setDatasetid(String datasetid) {
+	public void setDatasetid(String datasetid) {
 		this.datasetid = datasetid;
 	}
 
-	public synchronized String getRecordid() {
+	public String getRecordid() {
 		return recordid;
 	}
 
-	public synchronized void setRecordid(String recordid) {
+	public void setRecordid(String recordid) {
 		this.recordid = recordid;
 	}
 
-	public synchronized BxlParking getFields() {
+	public BxlParking getFields() {
 		return fields;
 	}
 
-	public synchronized void setFields(BxlParking fields) {
+	public void setFields(BxlParking fields) {
 		this.fields = fields;
 	}
 
-	public synchronized String getRecord_timestamp() {
+	public String getRecord_timestamp() {
 		return record_timestamp;
 	}
 
-	public synchronized void setRecord_timestamp(String record_timestamp) {
+	public void setRecord_timestamp(String record_timestamp) {
 		this.record_timestamp = record_timestamp;
 	}
 

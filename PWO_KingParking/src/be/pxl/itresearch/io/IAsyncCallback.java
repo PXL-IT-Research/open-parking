@@ -6,5 +6,5 @@ package be.pxl.itresearch.io;
  * @param <T>
  */
 public interface IAsyncCallback<T> {
-    public void onOperationCompleted(T result);
+    void onOperationCompleted(T result);
 }

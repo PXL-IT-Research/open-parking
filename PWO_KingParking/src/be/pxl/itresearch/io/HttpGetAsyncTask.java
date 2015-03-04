@@ -9,7 +9,7 @@ import android.os.AsyncTask;
  * @author Servaas Tilkin
  */
 public class HttpGetAsyncTask extends AsyncTask<String, Void, String> {
-	private IAsyncCallback<String> resultListener;
+	final private IAsyncCallback<String> resultListener;
 
 	public HttpGetAsyncTask(IAsyncCallback<String> uiClass) {
 		this.resultListener = uiClass;
@@ -21,7 +21,7 @@ public class HttpGetAsyncTask extends AsyncTask<String, Void, String> {
 			return null;
 		}
 
-		String url = args[0]; // get url from params
+		final String url = args[0]; // get url from params
 
 		return HttpIO.getHttpGetRequestContent(url);
 	}

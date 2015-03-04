@@ -1,6 +1,5 @@
 package be.pxl.parking.components;
 
-import android.app.Application;
 import android.content.Context;
 import be.pxl.parking.gui.MapFragment;
 

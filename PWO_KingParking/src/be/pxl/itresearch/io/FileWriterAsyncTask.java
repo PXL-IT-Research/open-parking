@@ -10,13 +10,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 /**
- * Class that performs a file write in the background.
- * Call execute with two parameters: file name, file content (String)
+ * Class that performs a file write in the background. Call execute with two parameters: file name, file content
+ * (String)
+ * 
  * @author Servaas Tilkin
  */
 public class FileWriterAsyncTask extends AsyncTask<String, Void, Boolean> {
-	private IAsyncCallback<Boolean> resultListener;
-	private Context context;
+	private final IAsyncCallback<Boolean> resultListener;
+	private final Context context;
+	public static final int MIN_ARGS = 2;
 
 	public FileWriterAsyncTask(IAsyncCallback<Boolean> callback, Context ctx) {
 		this.resultListener = callback;
@@ -29,19 +31,20 @@ public class FileWriterAsyncTask extends AsyncTask<String, Void, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(String... args) {
-		if (args.length < 2) {
+		if (args.length < MIN_ARGS) {
 			return false;
 		}
 
-		String fileName = args[0]; // get filename from params
-		String content = args[1]; // get content from params
+		final String fileName = args[0]; // get filename from params
+		final String content = args[1]; // get content from params
 
-		BufferedWriter buf_out = null;
+		BufferedWriter bufOut = null;
 
 		try {
-			FileOutputStream io_out = getContext().openFileOutput(fileName, Context.MODE_PRIVATE);
-			buf_out = new BufferedWriter(new OutputStreamWriter(io_out));
-			buf_out.write(content);
+			final FileOutputStream ioOut = getContext().openFileOutput(fileName,
+					Context.MODE_PRIVATE);
+			bufOut = new BufferedWriter(new OutputStreamWriter(ioOut));
+			bufOut.write(content);
 			return true;
 		} catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
@@ -51,8 +54,8 @@ public class FileWriterAsyncTask extends AsyncTask<String, Void, Boolean> {
 			return false;
 		} finally {
 			try {
-				if (buf_out != null) {
-					buf_out.close();
+				if (bufOut != null) {
+					bufOut.close();
 				}
 			} catch (IOException ioe) {
 				ioe.printStackTrace();

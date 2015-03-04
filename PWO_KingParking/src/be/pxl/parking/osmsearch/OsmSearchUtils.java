@@ -54,8 +54,8 @@ public class OsmSearchUtils {
 	}
 
 	public static List<OsmResult> searchOsm(String searchString) {
-		searchString = Uri.encode(searchString + LOCALIZED_SEARCH);
-		String url = String.format(OSM_SEARCH_URL_FORMAT, searchString);
+		String encodedString = Uri.encode(searchString + LOCALIZED_SEARCH);
+		String url = String.format(OSM_SEARCH_URL_FORMAT, encodedString);
 		String resultJson = HttpIO.getHttpGetRequestContent(url);
 		return convertJsonArrayToOsmResultList(resultJson);
 	}

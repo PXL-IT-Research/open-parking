@@ -38,7 +38,7 @@ public class MyPathOverlay extends PathOverlay {
 	/**
 	 * Stores points, converted to the map projection.
 	 */
-	private ArrayList<Point> mPoints;
+	private List<Point> mPoints;
 
 	/**
 	 * Number of points that have precomputed values.
