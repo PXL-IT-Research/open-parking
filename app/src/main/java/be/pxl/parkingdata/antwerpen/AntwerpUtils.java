@@ -1,15 +1,19 @@
 package be.pxl.parkingdata.antwerpen;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.Overlay;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Overlay;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import be.pxl.itresearch.io.FileReaderAsyncTask;
 import be.pxl.itresearch.io.FileWriterAsyncTask;
 import be.pxl.itresearch.io.HttpGetAsyncTask;
@@ -17,9 +21,6 @@ import be.pxl.itresearch.io.IAsyncCallback;
 import be.pxl.parking.components.CityParkings;
 import be.pxl.parking.gui.MapFragment;
 import be.pxl.parking.gui.MyPathOverlay;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 /**
  * 
@@ -187,7 +188,7 @@ public class AntwerpUtils extends CityParkings {
 				paint = new Paint(paint);
 				paint.setColor(color);
 				paint.setAntiAlias(true);
-				paint.setAlpha(90);
+				paint.setAlpha(75);
 				zoneOverlay.setPaint(paint);
 				for (List<List<Double>> pointList : geom.getCoordinates()) {
 					for (List<Double> point : pointList) {
