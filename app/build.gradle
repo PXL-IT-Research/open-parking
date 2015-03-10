@@ -24,4 +24,5 @@ dependencies {
     compile files('libs/json-20140107.jar')
     compile files('libs/osmdroid-android-4.2.jar')
     compile files('libs/slf4j-android-1.5.8.jar')
+    compile files('libs/osmbonuspack_v5.1.jar')
 }

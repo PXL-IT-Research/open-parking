@@ -1,8 +1,5 @@
 package be.pxl.parking.gui;
 
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.OverlayItem;
-
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -14,6 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
+
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.OverlayItem;
+
 import be.pxl.parking.osmsearch.OsmResult;
 import be.pxl.parking.osmsearch.OsmSearchUtils;
 import be.pxl.parkingdata.antwerpen.AntwerpUtils;
@@ -23,94 +24,92 @@ import be.pxl.parkingdata.kortrijk.KortrijkUtils;
 import be.pxl.stilkin.kingparking.R;
 
 /**
- * 
  * @author stilkin
- * 
  */
 public class MainActivity extends Activity {
-	private MapFragment mapFrag;
-	private SearchView searchView;
-	private OverlayItem overlayItem;
+    private MapFragment mapFrag;
+    private OverlayItem overlayItem;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.empty_linearlayout);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.empty_linearlayout);
 
-		if (mapFrag == null) {
-			Log.w("onCreate","creating new map fragment");
-			this.mapFrag = new MapFragment();
-			
-			FragmentManager fragmentManager = getFragmentManager();
+        if (mapFrag == null) {
+            Log.w("onCreate", "creating new map fragment");
+            this.mapFrag = new MapFragment();
 
-			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-			fragmentTransaction.add(R.id.ll_vertical, this.mapFrag);
-			fragmentTransaction.commit();
-		}
+            FragmentManager fragmentManager = getFragmentManager();
 
-		loadParkingData();
-	}
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.ll_vertical, this.mapFrag);
+            fragmentTransaction.commit();
+        }
 
-	private void loadParkingData() {
-		AntwerpUtils antwerp = new AntwerpUtils(mapFrag, this);
-		antwerp.loadParkings(this);
+        loadParkingData();
+    }
 
-		BrusselsUtils brussels = new BrusselsUtils(mapFrag, this);
-		brussels.loadParkings(this);
+    private void loadParkingData() {
+        AntwerpUtils antwerp = new AntwerpUtils(mapFrag, this);
+        antwerp.loadParkings(this);
 
-		KortrijkUtils kortrijk = new KortrijkUtils(mapFrag, this);
-		kortrijk.loadParkings(this);
+        BrusselsUtils brussels = new BrusselsUtils(mapFrag, this);
+        brussels.loadParkings(this);
 
-		GentUtils gent = new GentUtils(mapFrag, this);
-		gent.loadParkings(this);
-	}
+        KortrijkUtils kortrijk = new KortrijkUtils(mapFrag, this);
+        kortrijk.loadParkings(this);
 
-	@Override
-	protected void onNewIntent(Intent intent) {
-		// super.onNewIntent(intent);
-		Log.d("onNewIntent", intent.getAction());
+        GentUtils gent = new GentUtils(mapFrag, this);
+        gent.loadParkings(this);
+    }
 
-		if (Intent.ACTION_VIEW.equalsIgnoreCase(intent.getAction())) {
-			String osmJson = intent.getExtras().getString(SearchManager.EXTRA_DATA_KEY);
-			OsmResult result = OsmSearchUtils.convertJsonToOsmResult(osmJson);
+    @Override
+    protected void onNewIntent(Intent intent) {
+        // super.onNewIntent(intent);
+        Log.d("onNewIntent", intent.getAction());
 
-			if (result != null) {
-				double latitude = Double.parseDouble(result.getLat());
-				double longitude = Double.parseDouble(result.getLon());
+        if (Intent.ACTION_VIEW.equalsIgnoreCase(intent.getAction())) {
+            String osmJson = intent.getExtras().getString(SearchManager.EXTRA_DATA_KEY);
+            OsmResult result = OsmSearchUtils.convertJsonToOsmResult(osmJson);
 
-				if (overlayItem != null) {
-					this.mapFrag.removeOverlayItem(overlayItem);
-				}
+            if (result != null) {
+                double latitude = Double.parseDouble(result.getLat());
+                double longitude = Double.parseDouble(result.getLon());
 
-				// add result marker
-				GeoPoint location = new GeoPoint(latitude, longitude);
-				overlayItem = new OverlayItem(result.getDisplay_name(), result.getDisplay_name(),
-						location);
-				this.mapFrag.addOverlayItem(overlayItem);
+                if (overlayItem != null) {
+                    this.mapFrag.removeOverlayItem(overlayItem);
+                }
 
-				// scroll to position
-				this.mapFrag.focusOnPosition(latitude, longitude, 17);
-			}
-		}
-	}
+                // add result marker
+                GeoPoint location = new GeoPoint(latitude, longitude);
+                overlayItem = new OverlayItem(result.getDisplay_name(), result.getDisplay_name(),
+                        location);
+                this.mapFrag.addOverlayItem(overlayItem);
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main_menu, menu);
-		MenuItem menuItem = menu.findItem(R.id.item_search);
-		searchView = (SearchView) menuItem.getActionView();
+                // scroll to position
+                this.mapFrag.focusOnPosition(latitude, longitude, 17);
+            }
+        }
+    }
 
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-		return super.onCreateOptionsMenu(menu);
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.item_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.item_snapToLocation) {
-			this.mapFrag.focusOnUserPosition();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.item_snapToLocation) {
+            this.mapFrag.focusOnUserPosition();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

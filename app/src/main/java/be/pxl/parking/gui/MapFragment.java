@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,7 +16,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.location.POI;
+import org.osmdroid.bonuspack.overlays.FolderOverlay;
+import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
@@ -25,6 +31,11 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import be.pxl.itresearch.io.IAsyncCallback;
+import be.pxl.parking.components.OSMBonusPackHelper;
+import be.pxl.stilkin.kingparking.R;
 
 public class MapFragment extends Fragment {
     private static final String PREFS_NAME = "openmaps_prefs";
@@ -37,15 +48,13 @@ public class MapFragment extends Fragment {
     private static final int MIN_ZOOM_LEVEL = 8;
 
     private SharedPreferences mPrefs;
-    private ResourceProxyImpl mResourceProxy;
     private MapView mMapView;
-    private MyLocationNewOverlay mLocationOverlay;
     private ItemizedIconOverlay<OverlayItem> mItemOverlay;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
-        this.mMapView = new MapView(inflater.getContext(), 256, this.mResourceProxy);
+        ResourceProxyImpl mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
+        this.mMapView = new MapView(inflater.getContext(), 256, mResourceProxy);
         this.mMapView.setTileSource(TileSourceFactory.MAPQUESTOSM);
         this.mMapView.setMinZoomLevel(MIN_ZOOM_LEVEL);
         // disable openGL to increase texture size
@@ -70,9 +79,9 @@ public class MapFragment extends Fragment {
         final Context context = getActivity();
 
         GpsMyLocationProvider locProvider = new GpsMyLocationProvider(context);
-        this.mLocationOverlay = new MyLocationNewOverlay(context, locProvider, this.mMapView);
-        this.mLocationOverlay.enableMyLocation();
-        this.mMapView.getOverlays().add(this.mLocationOverlay);
+        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(context, locProvider, this.mMapView);
+        mLocationOverlay.enableMyLocation();
+        this.mMapView.getOverlays().add(mLocationOverlay);
     }
 
     /**
@@ -161,6 +170,39 @@ public class MapFragment extends Fragment {
 
     public void focusOnPosition(double latitude, double longitude) {
         focusOnPosition(latitude, longitude, DEFAULT_ZOOM_LEVEL);
+        GeoPoint startPoint = new GeoPoint(latitude, longitude);
+        OSMBonusPackHelper.findParkingsNearby(startPoint, new PoiCallbackHandler());
+
+    }
+
+    private class PoiCallbackHandler implements IAsyncCallback<List<POI>> {
+
+        @Override
+        public void onOperationCompleted(List<POI> poiList) {
+            // addOverlayItem()
+
+            if (poiList != null) {
+                FolderOverlay poiMarkers = new FolderOverlay(getActivity());
+
+
+                Drawable poiIcon = getResources().getDrawable(R.drawable.ic_parking_marker);
+                for (POI poi : poiList) {
+                    Marker poiMarker = new Marker(mMapView);
+                    poiMarker.setTitle(poi.mType.toUpperCase());
+                    poiMarker.setSnippet(poi.mDescription);
+                    // poiMarker.setSubDescription(poi.mType);
+                    poiMarker.setPosition(poi.mLocation);
+                    poiMarker.setIcon(poiIcon);
+                    if (poi.mThumbnail != null) {
+                        poiMarker.setImage(new BitmapDrawable(poi.mThumbnail));
+                    }
+                    poiMarkers.add(poiMarker);
+                }
+
+                addOverlay(poiMarkers);
+
+            }
+        }
     }
 
     private class LocationHandler implements LocationListener {
@@ -181,4 +223,6 @@ public class MapFragment extends Fragment {
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
     }
+
+
 }

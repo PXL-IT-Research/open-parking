@@ -1,7 +1,10 @@
 package be.pxl.parkingdata.kortrijk;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,11 +15,8 @@ import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.List;
 
 import be.pxl.itresearch.io.FileReaderAsyncTask;
 import be.pxl.itresearch.io.FileWriterAsyncTask;
@@ -95,7 +95,7 @@ public class KortrijkUtils extends CityParkings {
         Log.d("processXmlResult", "Displaying Kortrijk data: ");
         List<KrtParkingInfo> parkings = parseXml(xmlResult);
 
-        if (parkings == null) { // nothing to display
+        if (parkings == null || parkings.size() < 1) { // nothing to display
             return;
         }
 
