@@ -152,7 +152,8 @@ public class MapFragment extends Fragment {
         // track user position
         LocationManager mLocMgr = (LocationManager) getActivity().getSystemService(
                 Context.LOCATION_SERVICE);
-        mLocMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10,
+        // TODO: change to toher
+        mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10,
                 new LocationHandler());
     }
 

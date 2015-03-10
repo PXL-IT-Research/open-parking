@@ -28,8 +28,9 @@ import be.pxl.parking.gui.MyPathOverlay;
  * 
  */
 public class AntwerpUtils extends CityParkings {
-	public static final String ANTWERP_ZONES_URL = "http://datasets.antwerpen.be/v1/geografie/paparkeertariefzones.json";
-	public static final String CACHE_FILENAME_ANTWERP = "parking_cache_antwerp"; // NOPMD by stilkin on 4-3-15 13:47
+	// public static final String ANTWERP_ZONES_URL = "http://datasets.antwerpen.be/v1/geografie/paparkeertariefzones.json"; // deprecated
+    public static final String ANTWERP_ZONES_URL = "http://datasets.antwerpen.be/v4/gis/paparkeertariefzones.json";
+    public static final String CACHE_FILENAME_ANTWERP = "parking_cache_antwerp"; // NOPMD by stilkin on 4-3-15 13:47
 
 	public static final String RED = "Rood";
 	public static final String BLUE = "Blauw";
@@ -52,7 +53,7 @@ public class AntwerpUtils extends CityParkings {
 	@Override
 	public void loadParkings(Context ctx) {
 		// load from file
-		final FileReaderAsyncTask fileTask = new FileReaderAsyncTask(new FileReadCallbackHandler(), ctx);
+		FileReaderAsyncTask fileTask = new FileReaderAsyncTask(new FileReadCallbackHandler(), ctx);
 		fileTask.execute(CACHE_FILENAME_ANTWERP);
 	}
 
@@ -138,7 +139,7 @@ public class AntwerpUtils extends CityParkings {
 		final Gson jsonHelper = new Gson();
 		final ParkeerWrapper parkeerWrapper = jsonHelper.fromJson(parkeerJson, ParkeerWrapper.class);
 		if (parkeerWrapper != null) {
-			zones = parkeerWrapper.getPaparkeertariefzones();
+			zones = parkeerWrapper.getData();
 			if (zones != null) {
 				String geomJson;
 				Geometry geom;
